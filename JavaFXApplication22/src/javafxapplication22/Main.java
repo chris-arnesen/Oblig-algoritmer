@@ -10,12 +10,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
  *
- * @author christofferstrandarnesen
+ * @author Mats, Christoffer, Jacob
  */
 public class Main extends Application {
     
@@ -27,16 +28,16 @@ public class Main extends Application {
             
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Hello World!!");
+                System.out.println("DeT SpIrEr YEET!!");
             }
         });
         
-        StackPane root = new StackPane();
+        BorderPane root = new BorderPane();
         root.getChildren().add(btn);
         
-        Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(root, 600, 600);
         
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("TRÆÆÆÆR!");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
