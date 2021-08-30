@@ -5,7 +5,10 @@
  */
 package javafxapplication22;
 
+import static java.lang.Integer.parseInt;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -17,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 /**
@@ -25,13 +29,20 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
     
+    public final int WIDTH = 600; 
+    public final int HEIGHT = 600; 
+    
+    public BorderPane root;
+    public Pane pane;
+    public HBox hbox;
+    
     @Override
     public void start(Stage primaryStage) {
        
         //Panes
-        BorderPane root = new BorderPane();
-        Pane pane = new Pane();
-        HBox hbox = new HBox();
+        root = new BorderPane();
+        pane = new Pane();
+        hbox = new HBox();
         hbox.setPrefHeight(50);
         hbox.setStyle("-fx-background-color: black;");
         hbox.setSpacing(10);
@@ -43,9 +54,21 @@ public class Main extends Application {
         
         //Interaktivitet
         TextField size = new TextField();
+        /*
+        Hvis vi vil at inp.feltet bare skal akseptere tall gjør vi det slik: 
+        size.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(!newValue.matches("\\d*"))
+                    size.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });*/
+        
         TextField angle = new TextField();
         TextField trunk = new TextField();
+        
         Button draw = new Button("Draw");
+        draw.setOnAction(e -> drawTree(size.getText(), angle.getText(), trunk.getText()));
         
         size.setPromptText("Tre størrelse");
         angle.setPromptText("Vinkel på gren");
@@ -55,18 +78,27 @@ public class Main extends Application {
         hbox.getChildren().addAll(size,angle,trunk,draw);
         
         
-        Scene scene = new Scene(root, 600, 600);
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
         
         primaryStage.setTitle("Ygdrasil");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    
+    public void drawTree(String size, String angle, String trunk) {
+        int size2 = parseInt(size), angle2 = parseInt(angle), trunk2 = parseInt(trunk);
+        
+        Line trunkLine = new Line(WIDTH/2, pane.getHeight(), WIDTH/2, (HEIGHT/4)+trunk2); 
+        pane.getChildren().add(trunkLine); 
     }
     
 }
