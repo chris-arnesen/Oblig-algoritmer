@@ -68,7 +68,13 @@ public class Main extends Application {
         TextField trunk = new TextField();
         
         Button draw = new Button("Draw");
-        draw.setOnAction(e -> drawTree(size.getText(), angle.getText(), trunk.getText()));
+        //draw.setOnAction(e -> drawTree(size.getText(), angle.getText(), trunk.getText()));
+        draw.setOnAction(e -> {
+            int size2 = parseInt(size.getText()); 
+            int angle2 = parseInt(angle.getText()); 
+            int trunk2 = parseInt(trunk.getText()); 
+            drawTree(size2, angle2, trunk2);
+        });
         
         size.setPromptText("Tre størrelse");
         angle.setPromptText("Vinkel på gren");
@@ -94,10 +100,13 @@ public class Main extends Application {
     }
     
     
-    public void drawTree(String size, String angle, String trunk) {
-        int size2 = parseInt(size), angle2 = parseInt(angle), trunk2 = parseInt(trunk);
+    public void drawTree(int size, int angle, int trunk) {  
+        if(trunk <= 2)
+            return; 
         
-        Line trunkLine = new Line(WIDTH/2, pane.getHeight(), WIDTH/2, (HEIGHT/4)+trunk2); 
+        double posX = WIDTH/2, posY = pane.getHeight(); 
+        
+        Line trunkLine = new Line(posX, posY, posX, posY - trunk); 
         pane.getChildren().add(trunkLine); 
     }
     
