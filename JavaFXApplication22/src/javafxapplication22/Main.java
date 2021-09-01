@@ -5,6 +5,7 @@
  */
 package javafxapplication22;
 
+import static java.lang.Integer.parseInt;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -54,7 +55,7 @@ public class Main extends Application {
         rotate.setAngle(-10);
         linje.getTransforms().add(rotate);
         */
-        tegnTre(300,400,0,40,10,50);
+        //tegnTre(300,400,40,10,50);
         root.setCenter(pane);
         root.setBottom(hbox);
         
@@ -63,6 +64,14 @@ public class Main extends Application {
         TextField angle = new TextField();
         TextField trunk = new TextField();
         Button draw = new Button("Draw");
+        
+        draw.setOnAction(e -> {
+            int size2 = parseInt(size.getText()); 
+            int angle2 = parseInt(angle.getText()); 
+            int trunk2 = parseInt(trunk.getText()); 
+            
+            tegnTre(300, 400, angle2, size2, 50); 
+        });
         
         size.setPromptText("Tre størrelse");
         angle.setPromptText("Vinkel på gren");
@@ -80,13 +89,13 @@ public class Main extends Application {
     }
     //tegnTre(300,400,0,10,5,50);
     //Metode som lager treet
-    public void tegnTre(double startX, double startY, int slutt, int vinkling, int str, double lengde) {
+    public void tegnTre(double startX, double startY, int vinkling, int str, double lengde) {
         //Base case, i dette tilfellet dersom treet når 2 px, eller størrelse er oppnådd
         //Neste linje skal være halvparten så lang, og ha litt annerledes vinkling
           //Base case: Dersom vi når den størrelsen vi har bedt om
-        if (str <= 0) {
-            return;
-        } else {
+        if (str <= 0 || lengde <= 2 || startX <= 0 && startY <= 0) 
+            return; 
+        else {
             //Lager venstre utgrening som en rett strek
             Line venstreGren = new Line(startX, startY, startX, startY-lengde);
             //Legger til vinkling på utgreningen
@@ -119,10 +128,10 @@ public class Main extends Application {
             //Her skal metoden kalles igjen to ganger, en gang for hver gren
               //Venstre
             tegnTre( nyeVenstreKoordinater.getX(), nyeVenstreKoordinater.getY(),
-                        0, (vinkling),(str-1),lengde-lengde/str );
+                        (vinkling),(str-1),lengde/2);
               //Høyre
             tegnTre( nyeHøyreKoordinater.getX(), nyeHøyreKoordinater.getY(),
-                        0, (vinkling), (str-1),lengde-lengde/str );
+                        (vinkling), (str-1),lengde/2);
             
         }
         
