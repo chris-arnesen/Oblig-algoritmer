@@ -70,7 +70,7 @@ public class Main extends Application {
             int angle2 = parseInt(angle.getText()); 
             int trunk2 = parseInt(trunk.getText()); 
             
-            tegnTre(300, 400, angle2, size2, 50); 
+            tegnTre(300, 400, angle2, size2, 50,0,0); 
         });
         
         size.setPromptText("Tre størrelse");
@@ -89,7 +89,8 @@ public class Main extends Application {
     }
     //tegnTre(300,400,0,10,5,50);
     //Metode som lager treet
-    public void tegnTre(double startX, double startY, int vinkling, int str, double lengde) {
+    public void tegnTre(double startX, double startY, int vinkling, int str, double lengde, 
+            double venstreForskjell, double høyreForskjell) {
         //Base case, i dette tilfellet dersom treet når 2 px, eller størrelse er oppnådd
         //Neste linje skal være halvparten så lang, og ha litt annerledes vinkling
           //Base case: Dersom vi når den størrelsen vi har bedt om
@@ -97,7 +98,7 @@ public class Main extends Application {
             return; 
         else {
             //Lager venstre utgrening som en rett strek
-            Line venstreGren = new Line(startX, startY, startX, startY-lengde);
+            Line venstreGren = new Line(startX, startY, startX-venstreForskjell, startY-lengde);
             //Legger til vinkling på utgreningen
             Rotate rotVenstre = new Rotate();
             rotVenstre.setPivotX(venstreGren.getStartX());
@@ -111,7 +112,7 @@ public class Main extends Application {
             //if (vinkling == 40)
             //
             
-            Line høyreGren = new Line(startX, startY, startX, startY-lengde);
+            Line høyreGren = new Line(startX, startY, startX+høyreForskjell, startY-lengde);
             Rotate rotHøyre = new Rotate();
             rotHøyre.setPivotX(høyreGren.getStartX());
             rotHøyre.setPivotY(høyreGren.getStartY());
@@ -122,16 +123,21 @@ public class Main extends Application {
                     "angle left: " + rotVenstre.getAngle());
             Point2D nyeHøyreKoordinater = høyreGren.localToParent(høyreGren.getEndX(),høyreGren.getEndY());
             
+            //Finner forskjell mellom parentgren sin start -og sluttX
+              //Venstre gren
+            double forskjellVenstre = venstreGren.getStartX() - nyeVenstreKoordinater.getX();
+              //Høyre gren
+            double forskjellHøyre = nyeHøyreKoordinater.getX() - høyreGren.getStartX();
             //Legger til de nye utgreningene til FX-vinduet
             pane.getChildren().addAll(venstreGren,høyreGren);
             
             //Her skal metoden kalles igjen to ganger, en gang for hver gren
               //Venstre
             tegnTre( nyeVenstreKoordinater.getX(), nyeVenstreKoordinater.getY(),
-                        (vinkling),(str-1),lengde/2);
+                        (vinkling),(str-1),lengde-(lengde/str), forskjellVenstre, forskjellHøyre );
               //Høyre
             tegnTre( nyeHøyreKoordinater.getX(), nyeHøyreKoordinater.getY(),
-                        (vinkling), (str-1),lengde/2);
+                        (vinkling), (str-1),lengde-(lengde/str), forskjellVenstre, forskjellHøyre );
             
         }
         
