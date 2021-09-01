@@ -74,7 +74,7 @@ public class Main extends Application {
         
         Scene scene = new Scene(root, 600, 600);
         
-        primaryStage.setTitle("Ygdrasil");
+        primaryStage.setTitle("Yggdrasil");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
