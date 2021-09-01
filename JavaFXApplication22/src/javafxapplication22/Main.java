@@ -86,7 +86,7 @@ public class Main extends Application {
         
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         
-        primaryStage.setTitle("Ygdrasil");
+        primaryStage.setTitle("Yggdrasil");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -108,6 +108,7 @@ public class Main extends Application {
         
         Line trunkLine = new Line(posX, posY, posX, posY - trunk); 
         pane.getChildren().add(trunkLine); 
+        
     }
     
 }
