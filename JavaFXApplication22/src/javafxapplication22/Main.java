@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -17,6 +18,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 /**
@@ -25,12 +29,14 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
     
+    Pane pane;
+    
     @Override
     public void start(Stage primaryStage) {
        
         
         BorderPane root = new BorderPane();
-        Pane pane = new Pane();
+        pane = new Pane();
         HBox hbox = new HBox();
         hbox.setPrefHeight(50);
         hbox.setStyle("-fx-background-color: black;");
@@ -38,6 +44,17 @@ public class Main extends Application {
         hbox.setPadding(new Insets(10,10,10,10));
         pane.setStyle("-fx-background-color: pink;");
         
+        Line linje = new Line(300,500,300,400); //300,500,300,400
+        
+        pane.getChildren().add(linje);
+        
+        /*Rotate rotate = new Rotate();
+        rotate.setPivotX(linje.getStartX());
+        rotate.setPivotY(linje.getStartY());
+        rotate.setAngle(-10);
+        linje.getTransforms().add(rotate);
+        */
+        tegnTre(300,400,0,40,10,50);
         root.setCenter(pane);
         root.setBottom(hbox);
         
@@ -59,6 +76,55 @@ public class Main extends Application {
         primaryStage.setTitle("Ygdrasil");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    //tegnTre(300,400,0,10,5,50);
+    //Metode som lager treet
+    public void tegnTre(double startX, double startY, int slutt, int vinkling, int str, double lengde) {
+        //Base case, i dette tilfellet dersom treet når 2 px, eller størrelse er oppnådd
+        //Neste linje skal være halvparten så lang, og ha litt annerledes vinkling
+          //Base case: Dersom vi når den størrelsen vi har bedt om
+        if (str <= 0) {
+            return;
+        } else {
+            //Lager venstre utgrening som en rett strek
+            Line venstreGren = new Line(startX, startY, startX, startY-lengde);
+            //Legger til vinkling på utgreningen
+            Rotate rotVenstre = new Rotate();
+            rotVenstre.setPivotX(venstreGren.getStartX());
+            rotVenstre.setPivotY(venstreGren.getStartY());
+            rotVenstre.setAngle(-vinkling); //-20
+            venstreGren.getTransforms().add(rotVenstre);
+            //Finner nye sluttkoordinater til utgrening, etter vinkling har blitt lagt til
+              //Disse blir nye startkoordinater for neste utgrening
+            Point2D nyeVenstreKoordinater = venstreGren.localToParent(venstreGren.getEndX(),venstreGren.getEndY());
+            
+            //if (vinkling == 40)
+            //
+            
+            Line høyreGren = new Line(startX, startY, startX, startY-lengde);
+            Rotate rotHøyre = new Rotate();
+            rotHøyre.setPivotX(høyreGren.getStartX());
+            rotHøyre.setPivotY(høyreGren.getStartY());
+            rotHøyre.setAngle(vinkling);
+            høyreGren.getTransforms().add(rotHøyre);
+            
+            System.out.println("angle: " + rotHøyre.getAngle() + "\n" + 
+                    "angle left: " + rotVenstre.getAngle());
+            Point2D nyeHøyreKoordinater = høyreGren.localToParent(høyreGren.getEndX(),høyreGren.getEndY());
+            
+            //Legger til de nye utgreningene til FX-vinduet
+            pane.getChildren().addAll(venstreGren,høyreGren);
+            
+            //Her skal metoden kalles igjen to ganger, en gang for hver gren
+              //Venstre
+            tegnTre( nyeVenstreKoordinater.getX(), nyeVenstreKoordinater.getY(),
+                        0, (vinkling),(str-1),lengde-lengde/str );
+              //Høyre
+            tegnTre( nyeHøyreKoordinater.getX(), nyeHøyreKoordinater.getY(),
+                        0, (vinkling), (str-1),lengde-lengde/str );
+            
+        }
+        
     }
 
     /**
