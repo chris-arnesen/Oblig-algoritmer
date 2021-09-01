@@ -34,7 +34,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
        
-        
+        //Panes
         BorderPane root = new BorderPane();
         pane = new Pane();
         HBox hbox = new HBox();
@@ -58,6 +58,7 @@ public class Main extends Application {
         root.setCenter(pane);
         root.setBottom(hbox);
         
+        //Interaktivitet
         TextField size = new TextField();
         TextField angle = new TextField();
         TextField trunk = new TextField();
