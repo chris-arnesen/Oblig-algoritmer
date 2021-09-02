@@ -108,6 +108,11 @@ public class Main extends Application {
         
         Line trunkLine = new Line(posX, posY, posX, posY - trunk); 
         pane.getChildren().add(trunkLine); 
+        drawBranch(posX, posY-trunk); 
+    }
+    
+    
+    public void drawBranch(double startX, double startY) {
         
     }
     
