@@ -12,6 +12,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -22,6 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 /**
@@ -68,6 +70,7 @@ public class Main extends Application {
         TextField angle = new TextField();
         TextField trunk = new TextField();
         
+        
         Button draw = new Button("Draw");
         draw.setOnAction(e -> {
             int size2 = parseInt(size.getText()); 
@@ -76,17 +79,18 @@ public class Main extends Application {
             drawTree(size2, angle2, trunk2);
         });
         
+        
         size.setPromptText("Tre størrelse");
         angle.setPromptText("Vinkel på gren");
         trunk.setPromptText("Stammens størrelse");
         
         
         hbox.getChildren().addAll(size,angle,trunk,draw);
-        
+      
         
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         
-        
+      
         root.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -111,46 +115,80 @@ public class Main extends Application {
     
     
     public void drawTree(int size, int angle, int trunk) {  
-        if(trunk <= 2)
-            return; 
-        
-        double posX = WIDTH/2, posY = pane.getHeight(); 
-        
-        Line trunkLine = new Line(posX, posY, posX, posY - trunk); 
-        pane.getChildren().add(trunkLine); 
-        drawRightBranch(posX, posY-trunk, trunk/2, angle); 
-        drawLeftBranch(posX, posY-trunk, trunk/2, angle);
+        int startX = WIDTH/2, startY = (int) pane.getHeight();
+        Line line = new Line(startX, startY, startX, startY - trunk);
+        pane.getChildren().add(line);
+    
+        drawRightBranch(trunk/2, startX, startY-trunk, angle);
+        drawLeftBranch(trunk/2, startX, startY-trunk, angle*-1);
+        drawMiddleBranch(trunk/2, startX, startY-trunk, angle);
     }
     
     
-    public void drawRightBranch(double startX, double startY, double branchLength, int angle) {
-        if(branchLength <= 2 || startX >= WIDTH || startX <= WIDTH-WIDTH)
+    public void drawRightBranch(int size, int startX, int startY, int angle) {
+        if(size <= 2) 
+            return;
+        
+        Line branch = new Line(startX, startY, startX, startY - size);
+        pane.getChildren().add(branch);
+        
+        Rotate r = new Rotate();
+        r.setPivotX(startX);
+        r.setPivotY(startY);
+        r.setAngle(angle);
+        branch.getTransforms().add(r);
+        
+        angle = angle + angle;
+        Point2D nyekord = branch.localToParent(branch.getEndX(),branch.getEndY());
+        startX = (int) nyekord.getX();
+        startY = (int) nyekord.getY();
+        size = size/2;
+        
+        drawRightBranch(size, startX, startY, angle);
+        drawRightBranch(size, startX, startY, angle-(angle/2));
+    }
+    
+    
+    public void drawMiddleBranch(int size, int startX, int startY, int angle) {
+        if(size <= 2) 
             return; 
         
-        Line branch = new Line(startX, startY, startX + (angle-90), startY-branchLength); 
-        branch.setStyle("-fx-stroke: red;");
+        Line branch = new Line(startX, startY, startX, startY - size); 
+        pane.getChildren().add(branch);
+        
+        startX = (int) branch.getEndX(); 
+        startY = (int) branch.getEndY(); 
+        size = size/2; 
+        
+        drawLeftBranch(size, startX, startY, angle*-1); 
+        drawRightBranch(size, startX, startY, angle);
+        drawMiddleBranch(size, startX, startY, angle);
+    }
+    
+    
+    public void drawLeftBranch(int size, int startX, int startY, int angle) {
+        if(size <= 2) 
+            return; 
+        
+        Line branch = new Line(startX, startY, startX, startY - size);
         pane.getChildren().add(branch); 
         
+        Rotate r = new Rotate();
+        r.setPivotX(startX);
+        r.setPivotY(startY);
+        r.setAngle(angle);
+        branch.getTransforms().add(r);
+        
+        angle = angle*2;
         System.out.println(angle);
+        //startX = (int) branch.getEndX(); 
+        Point2D nyekord = branch.localToParent(branch.getEndX(),branch.getEndY());
+        startX = (int) nyekord.getX();
+        startY = (int) nyekord.getY();
+        size = size/2;
         
-        drawLeftBranch(startX + (angle-90), startY - branchLength, branchLength/2, angle-10);
-        drawRightBranch(startX + (angle-90), startY - branchLength, branchLength/2, angle+10);
+        drawLeftBranch(size, startX, startY, angle);
+        drawLeftBranch(size, startX, startY, (int) (angle*0.5));
     }
-    
-    
-    public void drawLeftBranch(double startX, double startY, double branchLength, int angle) {
-        if(branchLength <= 2 || startX >= WIDTH || startX <= WIDTH-WIDTH)
-            return; 
-  
-        
-        Line branch = new Line(startX, startY, startX - (angle-90), startY-branchLength); 
-        branch.setStyle("-fx-stroke: blue;");
-        pane.getChildren().add(branch); 
-  
-        
-        System.out.println(startX-(angle-90));
-        drawLeftBranch(startX - (angle-90), startY - branchLength, branchLength/2, angle+10);
-        drawRightBranch(startX - (angle-90), startY - branchLength, branchLength/2, angle-10);
-    }
-    
+
 }
