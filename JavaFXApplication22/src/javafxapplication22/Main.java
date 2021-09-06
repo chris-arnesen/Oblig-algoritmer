@@ -102,7 +102,7 @@ public class Main extends Application {
     public void rekursjon(int str, double startX, double startY, double forrigeVinkling, 
             double lengde, double vinkling, int tilfeldighet) {
         
-        if (str <= 0) 
+        if (str <= 0 || lengde <= 2) 
             return;
         else {
             //Oppretter venstre og høyre gren
