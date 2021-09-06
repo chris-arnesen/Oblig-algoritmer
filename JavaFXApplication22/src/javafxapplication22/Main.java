@@ -14,7 +14,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -117,6 +120,19 @@ public class Main extends Application {
     
     
     public void drawTree(int size, int angle, int trunk) {  
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Error!");
+        alert.setHeaderText("Incorrect input from user");
+        alert.setContentText("Size cannot be smaller than the trunk of the tree");
+        
+        if(size < trunk) {
+            alert.showAndWait().ifPresent(rs -> {
+                if(rs == ButtonType.OK) {
+                }
+            });
+            return;
+        }
+        
         int startX = WIDTH/2, startY = (int) pane.getHeight();
         Line line = new Line(startX, startY, startX, startY - trunk);
         pane.getChildren().add(line);
