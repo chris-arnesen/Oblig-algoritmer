@@ -15,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -68,7 +69,6 @@ public class Main extends Application {
         TextField trunk = new TextField();
         
         Button draw = new Button("Draw");
-        //draw.setOnAction(e -> drawTree(size.getText(), angle.getText(), trunk.getText()));
         draw.setOnAction(e -> {
             int size2 = parseInt(size.getText()); 
             int angle2 = parseInt(angle.getText()); 
@@ -85,6 +85,16 @@ public class Main extends Application {
         
         
         Scene scene = new Scene(root, WIDTH, HEIGHT);
+        
+        
+        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("X: " + event.getSceneX());
+                System.out.println("Y: " + event.getSceneY());
+            }
+        });
+        
         
         primaryStage.setTitle("Yggdrasil");
         primaryStage.setScene(scene);
@@ -108,12 +118,39 @@ public class Main extends Application {
         
         Line trunkLine = new Line(posX, posY, posX, posY - trunk); 
         pane.getChildren().add(trunkLine); 
-        drawBranch(posX, posY-trunk); 
+        drawRightBranch(posX, posY-trunk, trunk/2, angle); 
+        drawLeftBranch(posX, posY-trunk, trunk/2, angle);
     }
     
     
-    public void drawBranch(double startX, double startY) {
+    public void drawRightBranch(double startX, double startY, double branchLength, int angle) {
+        if(branchLength <= 2 || startX >= WIDTH || startX <= WIDTH-WIDTH)
+            return; 
         
+        Line branch = new Line(startX, startY, startX + (angle-90), startY-branchLength); 
+        branch.setStyle("-fx-stroke: red;");
+        pane.getChildren().add(branch); 
+        
+        System.out.println(angle);
+        
+        drawLeftBranch(startX + (angle-90), startY - branchLength, branchLength/2, angle-10);
+        drawRightBranch(startX + (angle-90), startY - branchLength, branchLength/2, angle+10);
+    }
+    
+    
+    public void drawLeftBranch(double startX, double startY, double branchLength, int angle) {
+        if(branchLength <= 2 || startX >= WIDTH || startX <= WIDTH-WIDTH)
+            return; 
+  
+        
+        Line branch = new Line(startX, startY, startX - (angle-90), startY-branchLength); 
+        branch.setStyle("-fx-stroke: blue;");
+        pane.getChildren().add(branch); 
+  
+        
+        System.out.println(startX-(angle-90));
+        drawLeftBranch(startX - (angle-90), startY - branchLength, branchLength/2, angle+10);
+        drawRightBranch(startX - (angle-90), startY - branchLength, branchLength/2, angle-10);
     }
     
 }
