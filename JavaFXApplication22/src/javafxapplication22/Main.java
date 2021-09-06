@@ -69,6 +69,7 @@ public class Main extends Application {
         
         TextField angle = new TextField();
         TextField trunk = new TextField();
+        TextField random = new TextField();
         
         
         Button draw = new Button("Draw");
@@ -83,9 +84,10 @@ public class Main extends Application {
         size.setPromptText("Tre størrelse");
         angle.setPromptText("Vinkel på gren");
         trunk.setPromptText("Stammens størrelse");
+        random.setPromptText("Grad av random");
         
         
-        hbox.getChildren().addAll(size,angle,trunk,draw);
+        hbox.getChildren().addAll(size,angle,trunk,random,draw);
       
         
         Scene scene = new Scene(root, WIDTH, HEIGHT);
