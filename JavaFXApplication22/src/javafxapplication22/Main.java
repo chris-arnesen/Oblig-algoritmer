@@ -26,17 +26,19 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author Mats, Christoffer, Jacob
+ * @author Jacob, Christoffer, Mats
  */
+
 public class Main extends Application {
     
     Pane pane;
+    BorderPane root;
     
     @Override
     public void start(Stage primaryStage) {
        
         //Panes
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
         pane = new Pane();
         HBox hbox = new HBox();
         hbox.setPrefHeight(50);
@@ -45,17 +47,10 @@ public class Main extends Application {
         hbox.setPadding(new Insets(10,10,10,10));
         pane.setStyle("-fx-background-color: pink;");
         
-        Line linje = new Line(300,500,300,400); //300,500,300,400
+        //Line linje = new Line(300,500,300,400); //300,500,300,400
         
-        pane.getChildren().add(linje);
+        //pane.getChildren().add(linje);
         
-        /*Rotate rotate = new Rotate();
-        rotate.setPivotX(linje.getStartX());
-        rotate.setPivotY(linje.getStartY());
-        rotate.setAngle(-10);
-        linje.getTransforms().add(rotate);
-        */
-        //tegnTre(300,400,40,10,50);
         root.setCenter(pane);
         root.setBottom(hbox);
         
@@ -63,85 +58,94 @@ public class Main extends Application {
         TextField size = new TextField();
         TextField angle = new TextField();
         TextField trunk = new TextField();
+        TextField tilfeldighet = new TextField();
         Button draw = new Button("Draw");
         
         draw.setOnAction(e -> {
+            pane.getChildren().clear();
             int size2 = parseInt(size.getText()); 
             int angle2 = parseInt(angle.getText()); 
             int trunk2 = parseInt(trunk.getText()); 
+            int tilfeldighet2 = parseInt(tilfeldighet.getText());
+            tegnTre(size2, trunk2, angle2, tilfeldighet2); // trenger en ekstra input for siste parameter i metoden
             
-            tegnTre(300, 400, angle2, size2, 50,0,0); 
         });
         
         size.setPromptText("Tre størrelse");
         angle.setPromptText("Vinkel på gren");
         trunk.setPromptText("Stammens størrelse");
+        tilfeldighet.setPromptText("Velg tilfeldighet [0-100]");
+        
+        hbox.getChildren().addAll(size,angle,trunk,tilfeldighet,draw);
         
         
-        hbox.getChildren().addAll(size,angle,trunk,draw);
-        
-        
-        Scene scene = new Scene(root, 600, 600);
+        Scene scene = new Scene(root, 800, 600);
         
         primaryStage.setTitle("Yggdrasil");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    //tegnTre(300,400,0,10,5,50);
-    //Metode som lager treet
-    public void tegnTre(double startX, double startY, int vinkling, int str, double lengde, 
-            double venstreForskjell, double høyreForskjell) {
-        //Base case, i dette tilfellet dersom treet når 2 px, eller størrelse er oppnådd
-        //Neste linje skal være halvparten så lang, og ha litt annerledes vinkling
-          //Base case: Dersom vi når den størrelsen vi har bedt om
-        if (str <= 0 || lengde <= 2 || startX <= 0 && startY <= 0) 
-            return; 
-        else {
-            //Lager venstre utgrening som en rett strek
-            Line venstreGren = new Line(startX, startY, startX-venstreForskjell, startY-lengde);
-            //Legger til vinkling på utgreningen
-            Rotate rotVenstre = new Rotate();
-            rotVenstre.setPivotX(venstreGren.getStartX());
-            rotVenstre.setPivotY(venstreGren.getStartY());
-            rotVenstre.setAngle(-vinkling); //-20
-            venstreGren.getTransforms().add(rotVenstre);
-            //Finner nye sluttkoordinater til utgrening, etter vinkling har blitt lagt til
-              //Disse blir nye startkoordinater for neste utgrening
-            Point2D nyeVenstreKoordinater = venstreGren.localToParent(venstreGren.getEndX(),venstreGren.getEndY());
-            
-            //if (vinkling == 40)
-            //
-            
-            Line høyreGren = new Line(startX, startY, startX+høyreForskjell, startY-lengde);
-            Rotate rotHøyre = new Rotate();
-            rotHøyre.setPivotX(høyreGren.getStartX());
-            rotHøyre.setPivotY(høyreGren.getStartY());
-            rotHøyre.setAngle(vinkling);
-            høyreGren.getTransforms().add(rotHøyre);
-            
-            System.out.println("angle: " + rotHøyre.getAngle() + "\n" + 
-                    "angle left: " + rotVenstre.getAngle());
-            Point2D nyeHøyreKoordinater = høyreGren.localToParent(høyreGren.getEndX(),høyreGren.getEndY());
-            
-            //Finner forskjell mellom parentgren sin start -og sluttX
-              //Venstre gren
-            double forskjellVenstre = venstreGren.getStartX() - nyeVenstreKoordinater.getX();
-              //Høyre gren
-            double forskjellHøyre = nyeHøyreKoordinater.getX() - høyreGren.getStartX();
-            //Legger til de nye utgreningene til FX-vinduet
-            pane.getChildren().addAll(venstreGren,høyreGren);
-            
-            //Her skal metoden kalles igjen to ganger, en gang for hver gren
-              //Venstre
-            tegnTre( nyeVenstreKoordinater.getX(), nyeVenstreKoordinater.getY(),
-                        (vinkling),(str-1),lengde-(lengde/str), forskjellVenstre, forskjellHøyre );
-              //Høyre
-            tegnTre( nyeHøyreKoordinater.getX(), nyeHøyreKoordinater.getY(),
-                        (vinkling), (str-1),lengde-(lengde/str), forskjellVenstre, forskjellHøyre );
-            
-        }
+    
+    
+    
+    //Drivermetode, lager stammen og starter den rekursive metoden
+    public void tegnTre(int str, int stammelengde, int vinkling, int tilfeldighet) {
+        int startPunktX = (int)pane.getWidth()/2, startPunktY = 550;
+        Line st = new Line(startPunktX, startPunktY, startPunktX, startPunktY-stammelengde);
+        pane.getChildren().add(st);
         
+        rekursjon(str, st.getEndX(), st.getEndY(), 0, stammelengde-(stammelengde/4), vinkling, tilfeldighet); //30 endres senere---
     }
+    
+    
+    //Rekursjonsmetode
+    public void rekursjon(int str, double startX, double startY, double forrigeVinkling, 
+            double lengde, double vinkling, int tilfeldighet) {
+        
+        if (str <= 0) 
+            return;
+        else {
+            //Oppretter venstre og høyre gren
+            Line venstre = new Line(startX, startY, startX, startY-lengde); 
+            Line høyre = new Line(startX, startY, startX, startY-lengde);   
+            //Legger til rotasjon
+            Rotate rV = new Rotate();
+            rV.setPivotX(startX);
+            rV.setPivotY(startY);
+            rV.setAngle(forrigeVinkling-vinkling);
+            venstre.getTransforms().add(rV);
+            
+            Rotate rH = new Rotate();
+            rH.setPivotX(startX);
+            rH.setPivotY(startY);
+            rH.setAngle(forrigeVinkling+vinkling);
+            høyre.getTransforms().add(rH);
+            
+            //Legger til tilfeldighet(Dersom bruker ønsker det)
+            int randomGenerator = (int)(Math.random()*99)+1;
+            if (str <= 3 && randomGenerator <= tilfeldighet) {
+                
+                venstre.setEndY(startY-(lengde+Math.random()*35) );
+                høyre.setEndY(startY-(lengde+Math.random()*35) );
+                
+                rV.setAngle(forrigeVinkling-Math.random()*40);
+                rH.setAngle(forrigeVinkling+Math.random()*40);
+            }
+            
+            pane.getChildren().addAll(venstre,høyre);
+            //Henter de nye slutt-koordinatene til "grenene"
+            Point2D vP = venstre.localToParent(venstre.getEndX(), venstre.getEndY());
+            Point2D hP = høyre.localToParent(høyre.getEndX(), høyre.getEndY());
+            
+            //Metoden gjør to kall på seg selv, siden det skal vokse to grener ut fra hver gren
+              //venstre
+            rekursjon(str-1, vP.getX(), vP.getY(), forrigeVinkling-vinkling, lengde-(lengde/4), vinkling, tilfeldighet);
+              //høyre
+            rekursjon(str-1, hP.getX(), hP.getY(), forrigeVinkling+vinkling, (lengde-lengde/4), vinkling, tilfeldighet);
+        }
+    
+    }
+    
 
     /**
      * @param args the command line arguments
