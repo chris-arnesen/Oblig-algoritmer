@@ -96,10 +96,10 @@ public class Main extends Application {
 
     /**
      *
-     * @param str
-     * @param stammelengde
-     * @param vinkling
-     * @param tilfeldighet
+     * @param str - Antall rekursjoner valgt av brukeren
+     * @param stammelengde - Lengde på første strek, valgt av brukeren
+     * @param vinkling - Grad av vinkling, valgt av brukeren
+     * @param tilfeldighet - Grad av tilfeldighet(0-100%) på treet, valgt av brukeren
      */
     public void tegnTre(int str, int stammelengde, int vinkling, int tilfeldighet) {
         int startPunktX = (int)pane.getWidth()/2, startPunktY = 550;
@@ -114,13 +114,13 @@ public class Main extends Application {
 
     /**
      *
-     * @param str
-     * @param startX
-     * @param startY
-     * @param forrigeVinkling
-     * @param lengde
-     * @param vinkling
-     * @param tilfeldighet
+     * @param str - Antall rekursjoner gjenværende
+     * @param startX - Startposisjon X for hvor neste gren skal starte
+     * @param startY - Startposisjon Y for hvor neste gren skal starte
+     * @param forrigeVinkling - Vinkling på forrige gren
+     * @param lengde - lengden på grenen(e)som skal tegnes
+     * @param vinkling - Grad av vinkling, valgt av brukeren
+     * @param tilfeldighet - Grad av tilfeldighet(0-100%) på treet, valg av brukeren
      */
     public void rekursjon(int str, double startX, double startY, double forrigeVinkling, 
             double lengde, double vinkling, int tilfeldighet) {
