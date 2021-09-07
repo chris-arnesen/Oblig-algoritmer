@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author Jacob, Christoffer, Mats
+ * @author Jacob Kristensen, Christoffer Arnesen, Mats Engesund
  */
 
 public class Main extends Application {
@@ -34,6 +34,10 @@ public class Main extends Application {
     Pane pane;
     BorderPane root;
     
+    /**
+     *
+     * @param primaryStage
+     */
     @Override
     public void start(Stage primaryStage) {
        
@@ -89,6 +93,14 @@ public class Main extends Application {
     
     
     //Drivermetode, lager stammen og starter den rekursive metoden
+
+    /**
+     *
+     * @param str
+     * @param stammelengde
+     * @param vinkling
+     * @param tilfeldighet
+     */
     public void tegnTre(int str, int stammelengde, int vinkling, int tilfeldighet) {
         int startPunktX = (int)pane.getWidth()/2, startPunktY = 550;
         Line st = new Line(startPunktX, startPunktY, startPunktX, startPunktY-stammelengde);
@@ -99,6 +111,17 @@ public class Main extends Application {
     
     
     //Rekursjonsmetode
+
+    /**
+     *
+     * @param str
+     * @param startX
+     * @param startY
+     * @param forrigeVinkling
+     * @param lengde
+     * @param vinkling
+     * @param tilfeldighet
+     */
     public void rekursjon(int str, double startX, double startY, double forrigeVinkling, 
             double lengde, double vinkling, int tilfeldighet) {
         
